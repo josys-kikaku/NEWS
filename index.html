@@ -147,7 +147,6 @@ body{
 }
 
 @keyframes newsIn{
-
   0%{
     opacity:0;
     transform:translateX(-30px);
@@ -157,10 +156,7 @@ body{
     opacity:1;
     transform:translateX(0);
   }
-
 }
-
-
 
 @keyframes blinkImportant{
   0%,100%{
@@ -267,7 +263,8 @@ function renderNews(){
 
   app.innerHTML = '';
 
-  const data = window.newsV2Data || [];
+  const data = (window.newsV2Data || [])
+    .filter(item => !isFutureDate(item.publicationDate));
 
   if(data.length === 0){
     app.innerHTML =
@@ -312,15 +309,15 @@ function renderNews(){
 
     card.addEventListener('mouseenter',()=>{
 
-  card.style.transform = 'translateY(-4px)';
+      card.style.transform = 'translateY(-4px)';
 
-  card.style.boxShadow = important
-    ? '0 8px 18px rgba(209,52,56,.22)'
-    : '0 8px 18px rgba(0,0,0,.12)';
+      card.style.boxShadow = important
+        ? '0 8px 18px rgba(209,52,56,.22)'
+        : '0 8px 18px rgba(0,0,0,.12)';
 
-  card.querySelector('.arrow').style.transform = 'translateX(4px)';
+      card.querySelector('.arrow').style.transform = 'translateX(4px)';
 
-});
+    });
 
     card.addEventListener('mouseleave',()=>{
 
@@ -420,6 +417,23 @@ function isToday(value){
 
 }
 
+function isFutureDate(value){
+
+  const d = new Date(value);
+
+  if(isNaN(d)){
+    return false;
+  }
+
+  const today = new Date();
+
+  today.setHours(0,0,0,0);
+  d.setHours(0,0,0,0);
+
+  return d > today;
+
+}
+
 function escapeHtml(str){
 
   return String(str)
@@ -427,7 +441,7 @@ function escapeHtml(str){
     .replaceAll('<','&lt;')
     .replaceAll('>','&gt;')
     .replaceAll('"','&quot;')
-    .replaceAll("'","&#039;");
+    .replaceAll("'","&#39;");
 
 }
 </script>
